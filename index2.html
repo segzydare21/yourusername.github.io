@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>UBA Fast Loan Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+font-family:'Segoe UI', Arial, sans-serif;
+margin:0;
+background:
+linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+url("https://images.unsplash.com/photo-1579621970795-87facc2f976d");
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+color:#333;
+}
+
+/* Header */
+header{
+background:#d40000;
+color:white;
+padding:18px;
+text-align:center;
+font-size:24px;
+font-weight:bold;
+}
+
+/* Leo Image */
+.leo{
+text-align:center;
+margin-top:20px;
+}
+.leo img{
+width:120px;
+}
+
+/* Container */
+.container{
+max-width:420px;
+margin:30px auto;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 10px 25px rgba(0,0,0,0.4);
+animation:fadein .6s;
+}
+
+h2{
+text-align:center;
+margin-top:0;
+}
+
+/* Inputs */
+input,select{
+width:100%;
+padding:12px;
+margin-top:10px;
+margin-bottom:15px;
+border-radius:6px;
+border:1px solid #ddd;
+font-size:14px;
+}
+
+/* Buttons */
+button{
+width:100%;
+padding:13px;
+border:none;
+border-radius:6px;
+background:#d40000;
+color:white;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+background:#a60000;
+}
+
+/* Dashboard buttons */
+.menu button{
+margin-bottom:10px;
+}
+
+/* Success */
+.success{
+text-align:center;
+}
+.emoji{
+font-size:60px;
+animation:bounce 1s infinite alternate;
+}
+
+/* Animations */
+@keyframes bounce{
+from{transform:translateY(0)}
+to{transform:translateY(-10px)}
+}
+
+@keyframes fadein{
+from{opacity:0; transform:translateY(20px)}
+to{opacity:1; transform:translateY(0)}
+}
+
+.hidden{
+display:none;
+}
+
+.status-container{
+text-align:center;
+padding:20px;
+font-size:18px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>UBA Fast Loan</header>
+
+<div class="leo">
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Robot_icon.svg">
+</div>
+
+<!-- LOGIN -->
+<div class="container" id="login">
+<h2>Customer Login</h2>
+<input placeholder="Username">
+<input type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+</div>
+
+<!-- DASHBOARD -->
+<div class="container hidden" id="dashboard">
+<h2>Dashboard</h2>
+<div class="menu">
+<button onclick="loan()">Request Loan</button>
+<button onclick="payLoan()">Pay Loan</button>
+<button onclick="loanStatus()">Loan Status</button>
+</div>
+</div>
+
+<!-- LOAN FORM -->
+<div class="container hidden" id="loan">
+<h2>Loan Application</h2>
+<input placeholder="Full Name">
+<input placeholder="Account Number">
+<input placeholder="BVN">
+<input placeholder="Phone Number">
+<input placeholder="Email">
+<input placeholder="Monthly Income">
+<input placeholder="Loan Amount">
+<select>
+<option>Select Loan Type</option>
+<option>Personal Loan</option>
+<option>SME Loan</option>
+<option>Corporate Loan</option>
+</select>
+<button onclick="submitLoan()">Submit Application</button>
+</div>
+
+<!-- SUCCESS -->
+<div class="container hidden success" id="success">
+<div class="emoji">🎉😄</div>
+<h2>Application Submitted!</h2>
+<p>Your loan request has been sent.</p>
+<p><b>Status:</b> Pending Regional Manager Approval</p>
+<p>Notification sent to Regional Manager.</p>
+</div>
+
+<!-- PAY LOAN -->
+<div class="container hidden success" id="payLoanContainer">
+<h2>Pay Loan</h2>
+<p id="outstandingText"></p>
+<input type="number" id="payAmount" placeholder="Enter payment amount">
+<button onclick="submitPayment()">Pay Now</button>
+</div>
+
+<!-- LOAN STATUS -->
+<div class="container hidden success" id="loanStatusContainer">
+<h2>Loan Status</h2>
+<div class="status-container" id="statusText"></div>
+<button onclick="backToDashboard()">Back to Dashboard</button>
+</div>
+
+<script>
+let outstanding = 3000000; // ₦3,000,000
+
+function login(){
+document.getElementById("login").classList.add("hidden");
+document.getElementById("dashboard").classList.remove("hidden");
+}
+
+function loan(){
+document.getElementById("dashboard").classList.add("hidden");
+document.getElementById("loan").classList.remove("hidden");
+}
+
+function submitLoan(){
+document.getElementById("loan").classList.add("hidden");
+document.getElementById("success").classList.remove("hidden");
+}
+
+function payLoan(){
+document.getElementById("dashboard").classList.add("hidden");
+document.getElementById("payLoanContainer").classList.remove("hidden");
+document.getElementById("outstandingText").innerText = "Your outstanding loan amount is ₦" + outstanding.toLocaleString();
+}
+
+function submitPayment(){
+let payment = Number(document.getElementById("payAmount").value);
+if(payment <= 0){
+alert("Please enter a valid payment amount.");
+return;
+}
+if(payment >= outstanding){
+outstanding = 0;
+alert("Payment successful! Your loan is fully paid.");
+}else{
+outstanding -= payment;
+alert("Payment successful! Remaining amount: ₦" + outstanding.toLocaleString());
+}
+document.getElementById("payAmount").value = "";
+}
+
+function loanStatus(){
+document.getElementById("dashboard").classList.add("hidden");
+document.getElementById("loanStatusContainer").classList.remove("hidden");
+let statusText = outstanding === 0 ? "All loans are paid. No outstanding balance." : "Outstanding loan amount: ₦" + outstanding.toLocaleString();
+document.getElementById("statusText").innerText = statusText;
+}
+
+function backToDashboard(){
+document.getElementById("loanStatusContainer").classList.add("hidden");
+document.getElementById("payLoanContainer").classList.add("hidden");
+document.getElementById("dashboard").classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>
